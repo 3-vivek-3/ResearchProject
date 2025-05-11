@@ -1,7 +1,7 @@
-from Environments import LinearEnvironment
-from Learners import ETCLearner
-from utility.Logger import ResultLogger
-from utility.SettingsSimulator import SettingsSimulator
+from src.Environments import LinearEnvironment
+from src.Learners import ETCLearner
+from src.utility.Logger import ResultLogger
+from src.utility.SettingsSimulator import SettingsSimulator
 import matplotlib
 matplotlib.use("tkagg")
 import numpy as np
@@ -15,8 +15,8 @@ def main():
 
 def complex_simulation():
 
-    settings_dir = "../configurations"
-    simulator = SettingsSimulator(settings_dir, "LinUCB_config.json")
+    settings_dir = "configurations"
+    simulator = SettingsSimulator(settings_dir, "Egreedy_config.json")
 
     simulator.simulate_all()
 
