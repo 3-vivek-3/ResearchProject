@@ -15,11 +15,11 @@ class SparseLinearEnvironment(AbstractEnvironment):
         cum_regret:
 
         SparseLinearEnvironment:
-        actions:
-        sparsity:
-        true_theta:
-        sigma:
-        k: 
+        actions: number of actions
+        sparsity: sparsity parameter
+        true_theta: should be auto-generated
+        sigma: parameter for randomness
+        k: dimension of the context. Not required rn.
     """
 
     def __init__(self, params):
