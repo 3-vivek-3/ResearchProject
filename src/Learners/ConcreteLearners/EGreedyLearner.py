@@ -10,28 +10,43 @@ class EGreedyLearner(AbstractLearner):
     the highest estimated reward based on a sparse, linear model.
 
     Attributes:
+        (super)
         T: Horizon
         t: Current round
         history: A list of (action, reward) tuples, updated per round
 
-        epsilon:
+        ()
+        epsilon: exploration rate in (0, 1)
+        p: the number of warmup rounds before selecting features
+        k: number of features to be selected after warmup rounds
+
+        (internal state)
         action_set:
         regressor:
+        selected_features: 
     """
     def __init__(self, T: int, params: dict):
         super().__init__(T, params)
 
-        self.epsilon = params["epsilon"]
+        self.epsilon: float = params["epsilon"]
         assert 0 <= self.epsilon <= 1
+
+        self.p: int = params.get("p", 10)
+        assert 0 <= self.p <= T
+
+        self.k: int = params.get("k", 0)
+        assert self.k > 0
 
         self.action_set = []
 
         # Lasso regressor to compute estimated theta (parameter vector)
-        self.regressor = SGDRegressor(penalty="l1", alpha=0.01)
+        self.regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
 
         # Elastic net regressor
         # By default, l1_ratio = 0.15, meaning l1=0.0015 and l2=0.0085
         ## self.regressor = SGDRegressor(penalty="elasticnet", alpha=0.01)
+
+        self.selected_features = None
 
     def run(self, env: SparseLinearEnvironment, logger = None):
 
@@ -42,25 +57,69 @@ class EGreedyLearner(AbstractLearner):
 
             # Select an action (feature vector) through exploration or exploitation
             context = env.generate_context() # why?
-            action = self.select_action(context)
-            x = np.array(action).reshape(1, -1)
+            action = self.select_action(t, context)
+
+            if self.selected_features is None:
+                action_for_model = action
+            else:
+                action_for_model = self.reduce_action(action)
 
             # Compute the reward corresponding to the selected action (feature vector)
-            reward = env.reveal_reward(x)
+            reward = env.reveal_reward(action)
+
+            x = action_for_model.reshape(1, -1)
             y = np.array([reward])
 
             # Update regressor
             self.regressor.partial_fit(x, y)
 
             # Append (action, reward) at round t to history
-            self.history.append((action, context, reward))
+            self.history.append((action, reward))
 
             env.record_regret(reward, self.action_set)
 
             if logger is not None:
                 logger.log(t, reward, env.regret[-1])
 
-    def select_action(self, context):
+            if t == self.p:
+                self.do_feature_selection()
+
+    '''
+    Adapts the learner to the reduced feature space.
+    - selects k features
+    - builds a new regressor from the old one to work for the reduced
+        feature space.
+    - 
+    '''
+    def do_feature_selection(self):
+        # X_full = the feature vectors from history for the first p rounds
+        # y_full = the rewards from history for the first p rounds
+
+        X_full = np.vstack([entry[0] for entry in self.history])
+        y_full = np.array([entry[1] for entry in self.history])
+
+        self.selected_features = np.array(self.selectKFeatures(X_full, y_full, self.k))
+
+        new_regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
+
+        dummy_x = np.zeros((1, self.k))
+        dummy_y = np.zeros(1)
+
+        new_regressor.partial_fit(dummy_x, dummy_y)
+
+        old_coef = self.regressor.coef_
+        old_intercept = self.regressor.intercept_
+
+        new_regressor.coef_ = old_coef[self.selected_features].copy()
+        new_regressor.intercept_ = old_intercept.copy() 
+
+        self.regressor = new_regressor
+
+    '''
+    Selects the best action.
+    - if p > t, then use a reduced action set, else use the normal action set
+    '''
+    def select_action(self, t, context):
 
         # If regressor hasn't been run yet, then the parameter 'coef_' doesn't exist.
         if not hasattr(self.regressor, 'coef_') or np.random.rand() < self.epsilon:
@@ -68,26 +127,36 @@ class EGreedyLearner(AbstractLearner):
             return self.action_set[i]
 
         else:
+            if t > self.p:
+                model_action_set = np.vstack([self.reduce_action(a) for a in self.action_set])
+            else:
+                model_action_set = self.action_set
+
             # Compute estimated rewards using estimated theta and feature vectors
-            estimated_rewards = self.regressor.predict(self.action_set)
+            estimated_rewards = self.regressor.predict(model_action_set)
             
             # Select action index whose corresponding estimated reward is maximum. 
             best_reward_id = np.argmax(estimated_rewards)
             
             # Return feature vector corresponding to selected action. 
-            return self.action_set[best_reward_id] 
+            return self.action_set[best_reward_id]
+    
+    '''
+    Reduces the dimensionality of an action using the selected features.
+    '''
+    def reduce_action(self, action):
+        if self.selected_features is None:
+            return action
+        return action[self.selected_features]
     
     def total_reward(self):
         total = 0
-        for (_, _, reward) in self.history:
+        for (_, reward) in self.history:
             total += reward
         return total
     
     def cum_reward(self):
         cumulative = []
-        for (_, _, reward) in self.history:
-             cumulative.append[reward]
+        for (_, reward) in self.history:
+             cumulative.append(reward)
         return cumulative
-
-
-    
