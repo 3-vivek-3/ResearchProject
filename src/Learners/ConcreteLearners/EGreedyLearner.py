@@ -62,7 +62,7 @@ class EGreedyLearner(AbstractLearner):
             if self.selected_features is None:
                 action_for_model = action
             else:
-                action_for_model = self.reduce_action(action)
+                action_for_model = action[self.selected_features]
 
             # Compute the reward corresponding to the selected action (feature vector)
             reward = env.reveal_reward(action)
@@ -141,13 +141,15 @@ class EGreedyLearner(AbstractLearner):
             # Return feature vector corresponding to selected action. 
             return self.action_set[best_reward_id]
     
+    
     '''
     Reduces the dimensionality of an action using the selected features.
-    '''
+    
     def reduce_action(self, action):
         if self.selected_features is None:
             return action
         return action[self.selected_features]
+    '''
     
     def total_reward(self):
         total = 0
