@@ -11,18 +11,21 @@
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
 
-            "trials" : 20,
-            "horizon" : 30,
+            "trials" : 1,
+            "horizon" : 1000,
 
             "env_config" : {
-                "d" : 100,
-                "actions" : 20,
+                "d" : 2000,
+                "actions" : 100,
                 "sigma" : 0.1,
                 "sparsity" : 0.1,
                 "k" : 12
             },
             "learner_config" : {
-                "epsilon": 0.1
+                "epsilon": 0.1,
+                "featureSelector": "anovaF",
+                "k": 1000,
+                "p": 250
             }
         }
     ]
