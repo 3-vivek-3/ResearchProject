@@ -7,19 +7,22 @@ class SparseLinearEnvironment(AbstractEnvironment):
     """
     Attributes:
         AbstractEnvironment:
-        d: the ambient dimension, full dimension of the feature space
-        action_set:
-        context_set: Not used here
-        curr_context: Not used here
+
+        d:              the ambient dimension, full dimension of the feature space
+        action_set:     stores the currently generated action set.
+        context_set:    Not used here
+        curr_context:   not used here
         regret:
         cum_regret:
 
         SparseLinearEnvironment:
-        actions: number of actions
-        sparsity: sparsity parameter
-        true_theta: should be auto-generated
-        sigma: parameter for randomness
-        k: dimension of the context. Not required rn.
+
+        actions:        number of actions
+        sparsity:       sparsity parameter
+        true_theta:     should be auto-generated
+        sigma:          parameter for randomness
+        k:              dimension of the context. Not required for this experiment.
+        p:              Initial number of rounds that bandit runs for before doing feature selection.
     """
 
     def __init__(self, params):
