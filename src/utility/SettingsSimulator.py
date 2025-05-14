@@ -29,7 +29,8 @@ class SettingsSimulator:
 
 
     def _read_settings(self):
-
+        
+        # the data loaded from a config file.
         data = json.load(open(self.settings_path, mode = "r", encoding="utf-8"))
 
         assert data["simulations"] is not None
@@ -38,11 +39,14 @@ class SettingsSimulator:
         self.name = data["name"]
         self.do_export = data["export_figures"]
         self.do_show = data["show_figures"]
+
+        # contains the actual data for all simulations
         self.settings = data["simulations"]
 
         self.curr_simulation = 0
         self.num_simulations = len(self.settings)
 
+        # a mapping of simulation name to simulation settings
         simulation_names = list(map(lambda sim : sim["name"], self.settings))
 
         # Make sure that simulation names are unique
