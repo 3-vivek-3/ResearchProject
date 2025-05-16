@@ -1,74 +1,157 @@
+from src.Environments import SparseLinearEnvironment
+from src.Learners import AbstractLearner
+from sklearn.linear_model import SGDRegressor
 import numpy as np
 
-from ..AbstractLearner import AbstractLearner
-from src.Environments import LinearEnvironment
-from sklearn.linear_model import SGDRegressor
-
 class ETCLearner(AbstractLearner):
+    """
+    Epsilon-greedy learner for a sparse linear bandit: chooses a random 
+    action with probability epsilon, otherwise selects the action with 
+    the highest estimated reward based on a sparse, linear model.
 
+    Attributes:
+        (super)
+        T: Horizon
+        t: Current round
+        history: A list of (action, reward) tuples, updated per round
+
+        ()
+        p: the number of warmup rounds before selecting features
+        k: number of features to be selected after warmup rounds
+        m: the number of exploration cycles per action
+        N: the number of actions
+
+
+        (internal state)
+        action_set:
+        regressor:
+        optimal_action: the chosen action that will be used throughout the
+            exploitation phase.
+        selected_features: 
+    """
     def __init__(self, T : int, params : dict):
         super().__init__(T, params)
 
-        self.optimal_action = None
+        self.p: int = params.get("p", 10)
+        assert 0 <= self.p <= T
+
+        self.k: int = params.get("k", 0)
+        assert self.k > 0
+
+        self.m = params.get("m")
+        self.N = 0
+
         self.action_set = None
-        self.d = None
-        self.k = None
-        self.N = params["N"]
-        self.regressor = None
 
+        # Lasso regressor to compute estimated theta (parameter vector)
+        self.regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
 
-    def run(self, env : LinearEnvironment, logger = None):
-        self.d = env.get_ambient_dim()
-        self.k = env.k
-        self.regressor = SGDRegressor(penalty='l2', alpha=0.01)
+        self.optimal_action_id = None
+
+        self.selected_features = None
+
+    def run(self, env : SparseLinearEnvironment, logger = None):
+        self.N = env.actions
 
         for t in range(1, self.T + 1):
+
+            # Generate a new set of actions (feature vectors)
             self.action_set = env.observe_actions()
-            context = env.generate_context()
-            action = self.select_action(context)
-            features = self.feature_map(action, context).reshape(1, -1)
 
-            reward = env.reveal_reward(features)
-            self.regressor.partial_fit(features, [reward])
+            # Select an action (feature vector) through exploration or exploitation
+            context = env.generate_context() # why?
+            action = self.select_action(t, context)
 
-            env.record_regret(reward, [self.feature_map(a, context) for a in self.action_set])
+            if self.selected_features is None:
+                action_for_model = action
+            else:
+                action_for_model = action[self.selected_features]
+
+            # Compute the reward corresponding to the selected action (feature vector)
+            reward = env.reveal_reward(action)
+
+            x = action_for_model.reshape(1, -1)
+            y = np.array([reward])
+
+            # Update regressor
+            self.regressor.partial_fit(x, y)
+
+            self.history.append((action, reward))
+
+            env.record_regret(reward, self.action_set)
 
             # Log the actions
             if logger is not None:
                 logger.log(t, reward, env.regret[-1])
 
-            self.history.append((action, context, reward))
-            self.t += 1
+            if t == self.p:
+                self.do_feature_selection()
 
-        return env.get_cumulative_regret()
+    '''
+    Adapts the learner to the reduced feature space.
+    - selects k features
+    - builds a new regressor from the old one to work for the reduced
+        feature space.
+    - 
+    '''
+    def do_feature_selection(self):
+        # X_full = the feature vectors from history for the first p rounds
+        # y_full = the rewards from history for the first p rounds
 
+        X_full = np.vstack([entry[0] for entry in self.history])
+        y_full = np.array([entry[1] for entry in self.history])
 
-    def feature_map(self, action, context):
-        return np.array(action)
+        self.selected_features = np.array(self.selectKFeatures(X_full, y_full, self.k))
 
+        new_regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
 
-    def select_action(self, context):
-        if self.t < self.N * self.k:
-            return self.action_set[self.t % self.k]
+        dummy_x = np.zeros((1, self.k))
+        dummy_y = np.zeros(1)
 
-        if self.t == self.N * self.k:
-            best_reward = -float('inf')
-            for a in self.action_set:
-                r = self.regressor.predict(self.feature_map(a, context).reshape(1, -1))
-                if r > best_reward:
-                    best_reward = r
-                    self.optimal_action = a
+        new_regressor.partial_fit(dummy_x, dummy_y)
 
-        return self.optimal_action
+        old_coef = self.regressor.coef_
+        old_intercept = self.regressor.intercept_
+
+        new_regressor.coef_ = old_coef[self.selected_features].copy()
+        new_regressor.intercept_ = old_intercept.copy() 
+
+        self.regressor = new_regressor
+
+    def select_action(self, t, context):
+        if t < self.N * self.m:
+            return self.action_set[t % self.N]
+        
+        if t == self.N * self.m:
+            if t > self.p:
+                model_action_set = np.vstack([self.reduce_action(a) for a in self.action_set])
+            else:
+                model_action_set = self.action_set
+            
+            # Compute estimated rewards using estimated theta and feature vectors
+            estimated_rewards = self.regressor.predict(model_action_set)
+
+            # Select action index whose corresponding estimated reward is maximum. 
+            self.optimal_action_id = np.argmax(estimated_rewards)
+
+        return self.action_set[self.optimal_action_id]
+    
+    '''
+    Reduces the dimensionality of an action using the selected features.
+    '''
+    def reduce_action(self, action):
+        if self.selected_features is None:
+            return action
+        return action[self.selected_features]
 
     def total_reward(self):
         total = 0
-        for (a, c, r) in self.history:
-            total += r
+        for (_, reward) in self.history:
+            total += reward
         return total
 
     def cum_reward(self):
-        total = []
-        for (a, c, r) in self.history:
-            total.append(r)
-        return total
+        cumulative = []
+        for (_, reward) in self.history:
+             cumulative.append(reward)
+        return cumulative

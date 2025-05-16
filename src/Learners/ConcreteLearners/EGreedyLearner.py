@@ -144,12 +144,11 @@ class EGreedyLearner(AbstractLearner):
     
     '''
     Reduces the dimensionality of an action using the selected features.
-    
+    '''
     def reduce_action(self, action):
         if self.selected_features is None:
             return action
         return action[self.selected_features]
-    '''
     
     def total_reward(self):
         total = 0
