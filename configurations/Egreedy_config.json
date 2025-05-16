@@ -6,17 +6,17 @@
 
     "simulations" : [
         {
-            "name" : "Egreedy 0.1-epsilon 0.1-sparsity",
+            "name" : "E-greedy epsilon: 0.1",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
 
-            "trials" : 1,
-            "horizon" : 1000,
+            "trials" : 20,
+            "horizon" : 100,
 
             "env_config" : {
-                "d" : 2000,
-                "actions" : 100,
+                "d" : 20,
+                "actions" : 10,
                 "sigma" : 0.1,
                 "sparsity" : 0.1,
                 "k" : 12
@@ -24,8 +24,31 @@
             "learner_config" : {
                 "epsilon": 0.1,
                 "featureSelector": "anovaF",
-                "k": 1000,
-                "p": 250
+                "k": 20,
+                "p": 100
+            }
+        },
+        {
+            "name" : "E-greedy epsilon: 0.01",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "trials" : 20,
+            "horizon" : 100,
+
+            "env_config" : {
+                "d" : 20,
+                "actions" : 10,
+                "sigma" : 0.1,
+                "sparsity" : 0.1,
+                "k" : 12
+            },
+            "learner_config" : {
+                "epsilon": 0.01,
+                "featureSelector": "anovaF",
+                "k": 20,
+                "p": 100
             }
         }
     ]

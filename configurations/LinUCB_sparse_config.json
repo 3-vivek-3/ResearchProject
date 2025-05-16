@@ -27,23 +27,26 @@
       }
     },
     {
-      "name" : "ETC",
+      "name" : "Egreedy 0.1-epsilon",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "EGreedyLearner",
 
-      "trials" : 20,
+      "trials" : 1,
       "horizon" : 100,
 
       "env_config" : {
-        "d" : 100,
-        "actions": 20,
-        "sigma" : 0.1,
-        "sparsity": 0.1,
-        "k" : 12
+          "d" : 100,
+          "actions" : 20,
+          "sigma" : 0.1,
+          "sparsity" : 0.1,
+          "k" : 12
       },
       "learner_config" : {
-        "N": 3
+          "epsilon": 0.1,
+          "featureSelector": "anovaF",
+          "k": 100,
+          "p": 100
       }
     }
   ]

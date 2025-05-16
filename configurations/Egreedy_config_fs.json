@@ -1,0 +1,102 @@
+{
+    "name" : "simulation Example",
+
+    "export_figures" : true,
+    "show_figures" : true,
+
+    "simulations" : [
+        {
+            "name" : "E-greedy base case:",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "trials" : 20,
+            "horizon" : 100,
+
+            "env_config" : {
+                "d" : 20,
+                "actions" : 10,
+                "sigma" : 0.1,
+                "sparsity" : 0.1,
+                "k" : 12
+            },
+            "learner_config" : {
+                "epsilon": 0.1,
+                "featureSelector": "anovaF",
+                "k": 20,
+                "p": 100
+            }
+        },
+        {
+            "name" : "Egreedy 0.1-epsilon with fs, p = 25",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "trials" : 20,
+            "horizon" : 100,
+
+            "env_config" : {
+                "d" : 20,
+                "actions" : 10,
+                "sigma" : 0.1,
+                "sparsity" : 0.1,
+                "k" : 12
+            },
+            "learner_config" : {
+                "epsilon": 0.1,
+                "featureSelector": "anovaF",
+                "k": 18,
+                "p": 25
+            }
+        },
+        {
+            "name" : "Egreedy 0.1-epsilon with fs, p = 50",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "trials" : 20,
+            "horizon" : 100,
+
+            "env_config" : {
+                "d" : 20,
+                "actions" : 10,
+                "sigma" : 0.1,
+                "sparsity" : 0.1,
+                "k" : 12
+            },
+            "learner_config" : {
+                "epsilon": 0.1,
+                "featureSelector": "anovaF",
+                "k": 18,
+                "p": 50
+            }
+        },
+        {
+            "name" : "Egreedy 0.1-epsilon with fs, p = 75",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "trials" : 20,
+            "horizon" : 100,
+
+            "env_config" : {
+                "d" : 20,
+                "actions" : 10,
+                "sigma" : 0.1,
+                "sparsity" : 0.1,
+                "k" : 12
+            },
+            "learner_config" : {
+                "epsilon": 0.1,
+                "featureSelector": "anovaF",
+                "k": 18,
+                "p": 75
+            }
+        }
+
+    ]
+}
