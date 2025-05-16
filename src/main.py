@@ -17,7 +17,9 @@ def complex_simulation():
 
     settings_dir = "configurations"
     simulator = SettingsSimulator(settings_dir, "Egreedy_config.json")
-
+    #simulator = SettingsSimulator(settings_dir, "ETC_sparse_config.json")
+    #simulator = SettingsSimulator(settings_dir, "LinUCB_sparse_config.json")
+    #simulator = SettingsSimulator(settings_dir, "ETC_sparse_config_test.json")
     simulator.simulate_all()
 
 def simple_example():
