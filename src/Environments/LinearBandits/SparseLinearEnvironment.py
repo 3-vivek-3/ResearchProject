@@ -31,15 +31,36 @@ class SparseLinearEnvironment(AbstractEnvironment):
         self.actions = params["actions"]
         self.sparsity = params["sparsity"]
 
-        if "true_theta" not in params.keys():
-            self.true_theta = self.generate_theta()
+        '''
+        During the first trial, when an environment is created for the first
+        time, it will record all the action sets generated over T rounds.
+        Settings simulator will store the list of action sets and the unknown
+        parameter vector theta. In the subsequent trials, the environment 
+
+        For each trial, the environment will create T action_sets and one 
+        parameter vector. This is done for multiple trials. All of this is
+        one simulation.
+
+        We store list(env_setup), where env_setup = (list(action_set),theta*)
+        '''
+        self.preloaded_action_sets = params.get("action_sets", None)
+        if self.preloaded_action_sets is None:
+            self.recorded_action_sets = []
         else:
-            self.true_theta = params["true_theta"]
+            self.recorded_action_sets = None
+        
+        self.current_round = 0
+
+        self.true_theta = params.get("true_theta", None)
+        if self.true_theta is None:
+            self.true_theta = self.generate_theta()
 
         self.sigma = params["sigma"]
 
-        # Assuming that the bandit is k-armed
+        # Assuming that the bandit is k-armed. (Currently unused)
         self.k = params["k"]
+
+
 
     def reveal_reward(self, action):
         # sparse arrays being cringe or me being stupid
@@ -67,10 +88,28 @@ class SparseLinearEnvironment(AbstractEnvironment):
         self.cum_regret += empirical_regret
         self.regret.append(empirical_regret)
 
-    '''
-    Generates the set of feature vectors.
-    each feature vector has d dimensions.
-    '''
+    """
+    Returns a (actions x d) array. In generation mode, draws and stores;
+    in replay mode, returns the pre-recorded set for this round.
+    """
     def observe_actions(self):
-        self.action_set = np.random.normal(0, 1, size=(self.actions, self.d))
-        return self.action_set
+        if self.preloaded_action_sets is not None:
+            action_set = self.preloaded_action_sets[self.current_round]
+        else:
+            action_set = np.random.normal(0, 1, size=(self.actions, self.d))
+            self.recorded_action_sets.append(action_set)
+        
+        self.action_set = action_set
+        self.current_round += 1
+        return action_set
+    
+    '''
+    Retrieve the recorded action sets after generation mode
+    '''
+    def get_recorded_action_sets(self):
+        if self.get_recorded_action_sets is None:
+            raise RuntimeError("No action sets recorded: environment is in replay mode")
+        return self.recorded_action_sets
+    
+    def get_theta(self):
+        return self.true_theta
