@@ -7,4 +7,5 @@ results/*
 # Byte‑compiled / optimized files
 __pycache__/
 
-.idea/
+# Data
+data/*
