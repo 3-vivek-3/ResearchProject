@@ -87,6 +87,18 @@ class ETCLearner(AbstractLearner):
             if t == self.p:
                 self.do_feature_selection()
 
+    def do_feature_selection(self):
+        X_full = np.vstack([entry[0] for entry in self.history])
+        y_full = np.array([entry[1] for entry in self.history])
+
+        self.selected_features = np.array(self.selectKFeatures(X_full, y_full, self.k))
+
+        X_reduced = X_full[:, self.selected_features]
+
+        new_regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
+        new_regressor.partial_fit(X_reduced, y_full)
+        self.regressor = new_regressor
+
     '''
     Adapts the learner to the reduced feature space.
     - selects k features
@@ -94,7 +106,7 @@ class ETCLearner(AbstractLearner):
         feature space.
     - 
     '''
-    def do_feature_selection(self):
+    def do_feature_selection1(self):
         # X_full = the feature vectors from history for the first p rounds
         # y_full = the rewards from history for the first p rounds
 
