@@ -16,7 +16,13 @@ def main():
 def complex_simulation():
 
     settings_dir = "configurations"
-    simulator = SettingsSimulator(settings_dir, "Egreedy_config.json")
+    #simulator = SettingsSimulator(settings_dir, "Egreedy_config.json")
+    #simulator = SettingsSimulator(settings_dir, "Egreedy_config1.json")
+    simulator = SettingsSimulator(settings_dir, "Egreedy_config_fs.json")
+    #simulator = SettingsSimulator(settings_dir, "Egreedy_config_playground.json")
+    #simulator = SettingsSimulator(settings_dir, "Egreedy_config_playground1.json")
+
+
     #simulator = SettingsSimulator(settings_dir, "ETC_sparse_config.json")
     #simulator = SettingsSimulator(settings_dir, "LinUCB_sparse_config.json")
     #simulator = SettingsSimulator(settings_dir, "ETC_sparse_config_test.json")

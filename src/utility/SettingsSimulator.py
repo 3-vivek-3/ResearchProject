@@ -23,7 +23,15 @@ class SettingsSimulator:
 
         self._read_settings()
 
-        data_file_name = "fixed_env_100x10x20.pkl.gz"
+        #data_file_name = "env_500x50x200_0%_sparsity.pkl.gz"
+        #data_file_name = "env_500x50x200_10%_sparsity.pkl.gz"
+        #data_file_name = "env_500x50x200_50%_sparsity.pkl.gz"
+        #data_file_name = "env_500x50x200_90%_sparsity.pkl.gz"
+        data_file_name = "env_500x50x200_90%_sparsity_50_trials.pkl.gz"
+
+        #data_file_name = "env_100x10x20_10%_sparsity.pkl.gz"
+        #data_file_name = "env_100x10x20_50%_sparsity.pkl.gz"
+        #data_file_name = "env_100x10x20_90%_sparsity.pkl.gz"
 
         data_file = Path("data") / data_file_name
         if data_file.exists():
@@ -108,7 +116,7 @@ class SettingsSimulator:
 
 
         for trial in trange(trials, desc=f"Running {name}"):
-            print("\nTrial: ", trial)
+            print("\nTrial: ", trial + 1)
             # Set up the logger
             self.logger.set_simulation(name, trial + 1)
 
@@ -131,6 +139,11 @@ class SettingsSimulator:
             learner : AbstractLearner = learner_cls(horizon, curr_settings["learner_config"])
 
             learner.run(env, self.logger)
+
+            print("\n")
+            print(env.get_theta())
+            print("\n")
+            print(learner.get_selected_features())
 
             #if self.curr_simulation == 0:
             #    self.trials_action_sets.append(env.get_recorded_action_sets())
