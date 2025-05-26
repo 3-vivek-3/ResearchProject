@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from src.Environments import AbstractEnvironment
-from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.feature_selection import SelectKBest, f_regression
 
 from sklearn.feature_selection import RFE
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import Lasso
 import numpy as np
 
 class AbstractLearner(ABC):
@@ -52,16 +52,16 @@ class AbstractLearner(ABC):
             return self.rfe(X, y, k)
         else:
             raise ValueError("Unknown feature selector. Use 'anovaF' or 'rfe'")
-
+        
+    # score_func=f_classif for classification problem.    
     # score_func=f_regression for regression problem.
-    # Isn't this a regression problem?
-    def anovaF(self, X, y, k, score_func=f_classif):
+    def anovaF(self, X, y, k, score_func=f_regression):
         selector = SelectKBest(score_func=score_func, k=k)
         selector.fit(X, y)
         return selector.get_support(indices=True)
     
     def rfe(self, X, y, k):
-        estimator = LogisticRegression(solver='liblinear', max_iter=1000)
+        estimator = Lasso(alpha=0.01, max_iter=10000)
 
         selector  = RFE(estimator = estimator, 
                         n_features_to_select=k, 
