@@ -1,12 +1,35 @@
 {
-    "name" : "E-greedy fs",
+    "name" : "E-greedy epsilon selection",
 
     "export_figures" : true,
     "show_figures" : true,
 
     "simulations" : [
         {
-            "name" : "E-greedy base case",
+            "name" : "E-greedy epsilon: 0.1",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "trials" : 50,
+            "horizon" : 500,
+
+            "env_config" : {
+                "d" : 200,
+                "actions" : 50,
+                "sigma" : 0.1,
+                "sparsity" : 0.1,
+                "k" : 12
+            },
+            "learner_config" : {
+                "epsilon": 0.1,
+                "featureSelector": "anovaF",
+                "k": 200,
+                "p": 500
+            }
+        },
+        {
+            "name" : "E-greedy epsilon: 0.01",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
@@ -25,11 +48,11 @@
                 "epsilon": 0.01,
                 "featureSelector": "anovaF",
                 "k": 200,
-                "p": 200
+                "p": 500
             }
         },
         {
-            "name" : "E-greedy k = 10, p = 200",
+            "name" : "E-greedy epsilon: 0.001",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
@@ -45,14 +68,14 @@
                 "k" : 12
             },
             "learner_config" : {
-                "epsilon": 0.01,
+                "epsilon": 0.001,
                 "featureSelector": "anovaF",
-                "k": 10,
-                "p": 200
+                "k": 200,
+                "p": 500
             }
         },
         {
-            "name" : "E-greedy k = 20, p = 200",
+            "name" : "E-greedy epsilon: 0.05",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
@@ -68,14 +91,14 @@
                 "k" : 12
             },
             "learner_config" : {
-                "epsilon": 0.01,
+                "epsilon": 0.05,
                 "featureSelector": "anovaF",
-                "k": 20,
-                "p": 200
+                "k": 200,
+                "p": 500
             }
         },
         {
-            "name" : "E-greedy k = 50, p = 200",
+            "name" : "E-greedy epsilon: 0.005",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
@@ -91,35 +114,11 @@
                 "k" : 12
             },
             "learner_config" : {
-                "epsilon": 0.01,
+                "epsilon": 0.005,
                 "featureSelector": "anovaF",
-                "k": 50,
-                "p": 200
-            }
-        },
-        {
-            "name" : "E-greedy k = 100, p = 200",
-
-            "env" : "SparseLinearEnvironment",
-            "learner" : "EGreedyLearner",
-
-            "trials" : 50,
-            "horizon" : 500,
-
-            "env_config" : {
-                "d" : 200,
-                "actions" : 50,
-                "sigma" : 0.1,
-                "sparsity" : 0.1,
-                "k" : 12
-            },
-            "learner_config" : {
-                "epsilon": 0.01,
-                "featureSelector": "anovaF",
-                "k": 100,
-                "p": 200
+                "k": 200,
+                "p": 500
             }
         }
-
     ]
 }

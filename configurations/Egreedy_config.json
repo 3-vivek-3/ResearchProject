@@ -50,6 +50,52 @@
                 "k": 20,
                 "p": 100
             }
+        },
+        {
+            "name" : "E-greedy epsilon: 0.05",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "trials" : 20,
+            "horizon" : 100,
+
+            "env_config" : {
+                "d" : 20,
+                "actions" : 10,
+                "sigma" : 0.1,
+                "sparsity" : 0.1,
+                "k" : 12
+            },
+            "learner_config" : {
+                "epsilon": 0.05,
+                "featureSelector": "anovaF",
+                "k": 20,
+                "p": 100
+            }
+        },
+        {
+            "name" : "E-greedy epsilon: 0.5",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "trials" : 20,
+            "horizon" : 100,
+
+            "env_config" : {
+                "d" : 20,
+                "actions" : 10,
+                "sigma" : 0.1,
+                "sparsity" : 0.1,
+                "k" : 12
+            },
+            "learner_config" : {
+                "epsilon": 0.5,
+                "featureSelector": "anovaF",
+                "k": 20,
+                "p": 100
+            }
         }
     ]
 }
