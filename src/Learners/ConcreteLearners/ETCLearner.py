@@ -5,9 +5,10 @@ import numpy as np
 
 class ETCLearner(AbstractLearner):
     """
-    Epsilon-greedy learner for a sparse linear bandit: chooses a random 
-    action with probability epsilon, otherwise selects the action with 
-    the highest estimated reward based on a sparse, linear model.
+    ETC learner for a sparse linear bandit: ETC is characterised by the 
+    number of times it explores each arm. This is denoted by m. Given that 
+    there are N actions, the algorithm will explore for mN rounds before 
+    choosing a fixed single action for the remaining rounds.
 
     Attributes:
         (super)
