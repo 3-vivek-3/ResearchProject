@@ -2,7 +2,7 @@ from pathlib import Path
 import numpy as np, pickle, gzip
 
 H = 500 # horizon
-K = 50 # actions
+N = 50 # actions
 TRIALS = 50 # trials
 D = 200 # ambient dimension
 SPARSITY = 0.9
@@ -13,7 +13,7 @@ thetas = []
 rng = np.random.default_rng(seed=42)
 
 for _ in range(TRIALS):
-    A = rng.normal(size=(H, K, D))        # shape: (t, a, d)
+    A = rng.normal(size=(H, N, D))        # shape: (t, a, d)
 
     s = int(np.round((1 - SPARSITY) * D))
     nz_idx = rng.choice(D, size = s, replace=False)
@@ -32,7 +32,7 @@ output_dir = Path("data")
 output_dir.mkdir(parents=True, exist_ok=True)
 
 # write to gzip‐compressed pickle
-file_path = output_dir / f"env_{H}x{K}x{D}_{(int)(SPARSITY * 100)}%_sparsity_{TRIALS}_trials.pkl.gz"
+file_path = output_dir / f"env_{H}x{N}x{D}_{(int)(SPARSITY * 100)}%_sparsity_{TRIALS}_trials.pkl.gz"
 with gzip.open(file_path, "wb") as f:
     # protocol=pickle.HIGHEST_PROTOCOL is recommended but optional
     pickle.dump(out, f, protocol=pickle.HIGHEST_PROTOCOL)
