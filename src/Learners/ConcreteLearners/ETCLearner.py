@@ -79,6 +79,13 @@ class ETCLearner(AbstractLearner):
             if t == self.p:
                 self.do_feature_selection()
 
+    '''
+    Adapts the learner to the reduced feature space.
+    - selects k features
+    - builds a new regressor from the old one to work for the reduced
+        feature space.
+    - 
+    '''
     def do_feature_selection(self):
         X_full = np.vstack([entry[0] for entry in self.history])
         y_full = np.array([entry[1] for entry in self.history])
@@ -89,37 +96,6 @@ class ETCLearner(AbstractLearner):
 
         new_regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
         new_regressor.partial_fit(X_reduced, y_full)
-        self.regressor = new_regressor
-
-    '''
-    Adapts the learner to the reduced feature space.
-    - selects k features
-    - builds a new regressor from the old one to work for the reduced
-        feature space.
-    - 
-    '''
-    def do_feature_selection1(self):
-        # X_full = the feature vectors from history for the first p rounds
-        # y_full = the rewards from history for the first p rounds
-
-        X_full = np.vstack([entry[0] for entry in self.history])
-        y_full = np.array([entry[1] for entry in self.history])
-
-        self.selected_features = np.array(self.selectKFeatures(X_full, y_full, self.k))
-
-        new_regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
-
-        dummy_x = np.zeros((1, self.k))
-        dummy_y = np.zeros(1)
-
-        new_regressor.partial_fit(dummy_x, dummy_y)
-
-        old_coef = self.regressor.coef_
-        old_intercept = self.regressor.intercept_
-
-        new_regressor.coef_ = old_coef[self.selected_features].copy()
-        new_regressor.intercept_ = old_intercept.copy() 
-
         self.regressor = new_regressor
 
     def select_action(self, t):
