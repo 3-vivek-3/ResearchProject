@@ -1,19 +1,21 @@
 from abc import ABC, abstractmethod
 from src.Environments import AbstractEnvironment
 from sklearn.feature_selection import SelectKBest, f_regression
-
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import Lasso
 import numpy as np
 
 class AbstractLearner(ABC):
-    def __init__(self, T : int, params : dict):
-        '''
-        :param actions: Array of the actions of the agent
-        :param T: Horizon
-        '''
+    """
+    Attributes:
+        T: Horizon
+        d: ambient dimension
+        history: A list of (action, reward) tuples, updated per round
+        p: the number of warmup rounds before selecting features
+        k: number of features to be selected after warmup rounds
+    """
+    def __init__(self, T : int, d: int, params : dict):
         self.T = T
-        self.t = 0
         self.history = []
 
         if "featureSelector" not in params.keys():
@@ -21,12 +23,18 @@ class AbstractLearner(ABC):
         else:
             self.featureSelector = params["featureSelector"]
 
+        self.p: int = params.get("p")
+        assert 0 < self.p <= T
+
+        self.k: int = params.get("k")
+        assert 0 < self.k <= d
+
     @abstractmethod
     def run(self, env : AbstractEnvironment, logger):
         pass
 
     @abstractmethod
-    def select_action(self, context):
+    def select_action(self):
         pass
 
     @abstractmethod
@@ -36,9 +44,6 @@ class AbstractLearner(ABC):
     @abstractmethod
     def cum_reward(self):
         pass
-
-    def feature_map(self, action, context):
-        return action
     
     '''
     Method that performs feature selection and returns the indices of the

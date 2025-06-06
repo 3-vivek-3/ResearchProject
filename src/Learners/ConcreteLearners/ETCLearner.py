@@ -13,31 +13,23 @@ class ETCLearner(AbstractLearner):
     Attributes:
         (super)
         T: Horizon
-        t: Current round
+        d: ambient dimension
         history: A list of (action, reward) tuples, updated per round
-
-        ()
         p: the number of warmup rounds before selecting features
         k: number of features to be selected after warmup rounds
+
+        ()
         m: the number of exploration cycles per action
         N: the number of actions
 
-
-        (internal state)
         action_set:
         regressor:
         optimal_action: the chosen action that will be used throughout the
             exploitation phase.
         selected_features: 
     """
-    def __init__(self, T : int, params : dict):
-        super().__init__(T, params)
-
-        self.p: int = params.get("p", 10)
-        assert 0 <= self.p <= T
-
-        self.k: int = params.get("k", 0)
-        assert self.k > 0
+    def __init__(self, T : int, d:int, params : dict):
+        super().__init__(T, d, params)
 
         self.m = params.get("m")
         self.N = 0
@@ -60,8 +52,7 @@ class ETCLearner(AbstractLearner):
             self.action_set = env.observe_actions()
 
             # Select an action (feature vector) through exploration or exploitation
-            context = env.generate_context() # why?
-            action = self.select_action(t, context)
+            action = self.select_action(t)
 
             if self.selected_features is None:
                 action_for_model = action
@@ -131,7 +122,7 @@ class ETCLearner(AbstractLearner):
 
         self.regressor = new_regressor
 
-    def select_action(self, t, context):
+    def select_action(self, t):
         if t < self.N * self.m:
             return self.action_set[t % self.N]
         

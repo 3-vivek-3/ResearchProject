@@ -5,37 +5,33 @@ import numpy as np
 
 class EGreedyLearner(AbstractLearner):
     """
-    Epsilon-greedy learner for a sparse linear bandit: chooses a random 
-    action with probability epsilon, otherwise selects the action with 
-    the highest estimated reward based on a sparse, linear model.
+    Epsilon-greedy learner for SCLB with feature selection: in each 
+    round, it either explores by picking a random action with probability 
+    ε, or exploits by selecting the action that maximizes reward under a 
+    sparse linear model estimated via online Lasso (SGD with L1 penalty). 
+    After a specified number of warm-up rounds p, it performs feature 
+    selection to restrict the model to the top k features, then continues 
+    learning in the reduced feature space.
 
     Attributes:
         (super)
-        T: Horizon
-        t: Current round
-        history: A list of (action, reward) tuples, updated per round
-
-        ()
-        epsilon: exploration rate in (0, 1)
+        T: horizon
+        d: ambient dimension
+        history: a list of (action, reward) tuples, updated per round
         p: the number of warmup rounds before selecting features
         k: number of features to be selected after warmup rounds
 
-        (internal state)
+        ()
+        epsilon: exploration rate in (0, 1)
         action_set:
         regressor:
         selected_features: 
     """
-    def __init__(self, T: int, params: dict):
-        super().__init__(T, params)
+    def __init__(self, T: int, d: int, params: dict):
+        super().__init__(T, d, params)
 
         self.epsilon: float = params["epsilon"]
         assert 0 <= self.epsilon <= 1
-
-        self.p: int = params.get("p", 10)
-        assert 0 <= self.p <= T
-
-        self.k: int = params.get("k", 0)
-        assert self.k > 0
 
         self.action_set = []
 
@@ -56,8 +52,7 @@ class EGreedyLearner(AbstractLearner):
             self.action_set = env.observe_actions()
 
             # Select an action (feature vector) through exploration or exploitation
-            context = env.generate_context() # why?
-            action = self.select_action(t, context)
+            action = self.select_action(t)
 
             if self.selected_features is None:
                 action_for_model = action
@@ -131,7 +126,7 @@ class EGreedyLearner(AbstractLearner):
     Selects the best action.
     - if p > t, then use a reduced action set, else use the normal action set
     '''
-    def select_action(self, t, context):
+    def select_action(self, t):
 
         # If regressor hasn't been run yet, then the parameter 'coef_' doesn't exist.
         if not hasattr(self.regressor, 'coef_') or np.random.rand() < self.epsilon:
