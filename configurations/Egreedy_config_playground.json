@@ -11,16 +11,6 @@
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
 
-            "trials" : 20,
-            "horizon" : 500,
-
-            "env_config" : {
-                "d" : 200,
-                "actions" : 50,
-                "sigma" : 0.1,
-                "sparsity" : 0.1,
-                "k" : 12
-            },
             "learner_config" : {
                 "epsilon": 0.01,
                 "featureSelector": "anovaF",
@@ -34,16 +24,6 @@
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
 
-            "trials" : 20,
-            "horizon" : 500,
-
-            "env_config" : {
-                "d" : 200,
-                "actions" : 50,
-                "sigma" : 0.1,
-                "sparsity" : 0.1,
-                "k" : 12
-            },
             "learner_config" : {
                 "epsilon": 0.01,
                 "featureSelector": "anovaF",

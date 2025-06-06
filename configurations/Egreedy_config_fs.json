@@ -25,11 +25,11 @@
                 "epsilon": 0.01,
                 "featureSelector": "anovaF",
                 "k": 200,
-                "p": 200
+                "p": 500
             }
         },
         {
-            "name" : "E-greedy k = 10, p = 200",
+            "name" : "E-greedy k = 100, p = 200",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
@@ -47,12 +47,12 @@
             "learner_config" : {
                 "epsilon": 0.01,
                 "featureSelector": "anovaF",
-                "k": 10,
+                "k": 100,
                 "p": 200
             }
         },
         {
-            "name" : "E-greedy k = 20, p = 200",
+            "name" : "E-greedy k = 100, p = 200",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
@@ -70,12 +70,12 @@
             "learner_config" : {
                 "epsilon": 0.01,
                 "featureSelector": "anovaF",
-                "k": 20,
+                "k": 100,
                 "p": 200
             }
         },
         {
-            "name" : "E-greedy k = 50, p = 200",
+            "name" : "E-greedy k = 100, p = 200",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
@@ -93,7 +93,7 @@
             "learner_config" : {
                 "epsilon": 0.01,
                 "featureSelector": "anovaF",
-                "k": 50,
+                "k": 100,
                 "p": 200
             }
         },
