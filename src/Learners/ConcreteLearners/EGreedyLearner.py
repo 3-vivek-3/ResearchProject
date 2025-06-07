@@ -5,13 +5,13 @@ import numpy as np
 
 class EGreedyLearner(AbstractLearner):
     """
-    Epsilon-greedy learner for SCLB with feature selection: in each 
-    round, it either explores by picking a random action with probability 
-    ε, or exploits by selecting the action that maximizes reward under a 
+    Epsilon-greedy SCLB learner with feature selection: in each round, the
+    learner either explores by picking a random action with probability ε, 
+    or exploits by selecting the action that maximizes reward under a 
     sparse linear model estimated via online Lasso (SGD with L1 penalty). 
     After a specified number of warm-up rounds p, it performs feature 
-    selection to restrict the model to the top k features, then continues 
-    learning in the reduced feature space.
+    selection to restrict the model to the top k features. The learner 
+    then continues selecting actions in the reduced feature space.
 
     Attributes:
         (super)
@@ -48,7 +48,7 @@ class EGreedyLearner(AbstractLearner):
 
         for t in range(1, self.T + 1):
 
-            # Generate a new set of actions (feature vectors)
+            # Generate a new action set (feature vectors).
             self.action_set = env.observe_actions()
 
             # Select an action (feature vector) through exploration or exploitation
@@ -103,12 +103,13 @@ class EGreedyLearner(AbstractLearner):
     - if p > t, then use a reduced action set, else use the normal action set
     '''
     def select_action(self, t):
-
+        # Exploration
         # If regressor hasn't been run yet, then the parameter 'coef_' doesn't exist.
         if not hasattr(self.regressor, 'coef_') or np.random.rand() < self.epsilon:
             i = np.random.randint(len(self.action_set))
             return self.action_set[i]
-
+        
+        # Exploitation
         else:
             if t > self.p:
                 model_action_set = np.vstack([self.reduce_action(a) for a in self.action_set])
@@ -123,7 +124,6 @@ class EGreedyLearner(AbstractLearner):
             
             # Return feature vector corresponding to selected action. 
             return self.action_set[best_reward_id]
-    
     
     '''
     Reduces the dimensionality of an action using the selected features.
