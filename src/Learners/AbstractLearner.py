@@ -18,10 +18,12 @@ class AbstractLearner(ABC):
         self.T = T
         self.history = []
 
-        if "featureSelector" not in params.keys():
-            self.featureSelector = "anovaF"
-        else:
-            self.featureSelector = params["featureSelector"]
+        #if "featureSelector" not in params.keys():
+        #    self.featureSelector = "anovaF"
+        #else:
+        #    self.featureSelector = params["featureSelector"]
+        
+        self.featureSelector = params.get("featureSelector", "anovaF")
         
         # No feature selection means p = T and k = d
         self.p: int = params.get("p", self.T)
@@ -29,6 +31,8 @@ class AbstractLearner(ABC):
 
         self.k: int = params.get("k", d)
         assert 0 < self.k <= d
+
+        print(f"\np: {self.p}, k: {self.k}")
 
     @abstractmethod
     def run(self, env : AbstractEnvironment, logger):
