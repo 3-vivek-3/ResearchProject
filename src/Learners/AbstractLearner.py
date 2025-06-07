@@ -22,11 +22,12 @@ class AbstractLearner(ABC):
             self.featureSelector = "anovaF"
         else:
             self.featureSelector = params["featureSelector"]
-
-        self.p: int = params.get("p")
+        
+        # No feature selection means p = T and k = d
+        self.p: int = params.get("p", self.T)
         assert 0 < self.p <= T
 
-        self.k: int = params.get("k")
+        self.k: int = params.get("k", d)
         assert 0 < self.k <= d
 
     @abstractmethod
