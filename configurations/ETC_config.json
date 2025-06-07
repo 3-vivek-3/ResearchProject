@@ -1,0 +1,38 @@
+{
+  "name" : "Simulation Example",
+
+  "export_figures" : true,
+  "show_figures" : true,
+  "simulations" : [
+    {
+      "name" : "ETC: m = 4",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "ETCLearner",
+
+      "learner_config" : {
+        "m": 4
+      }
+    },
+    {
+      "name" : "ETC: m = 5",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "ETCLearner",
+
+      "learner_config" : {
+        "m": 5
+      }
+    },
+    {
+      "name" : "ETC: m = 6",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "ETCLearner",
+
+      "learner_config" : {
+        "m": 6
+      }
+    }
+  ]
+}
