@@ -5,10 +5,14 @@ import numpy as np
 
 class ETCLearner(AbstractLearner):
     """
-    ETC learner for a sparse linear bandit: ETC is characterised by the 
-    number of times it explores each arm. This is denoted by m. Given that 
-    there are N actions, the algorithm will explore for mN rounds before 
-    choosing a fixed single action for the remaining rounds.
+    ETC SCLB learner with feature selection: the learner explores the 
+    actions for the first mN rounds, visiting each action m times. At 
+    round mN, it locks in on the estimated param vector 𝜃^ by fitting
+    the Lasso (SGD with L1 penalty). In subsequent rounds, the learner 
+    exploits, by selecting the action that maximises reward under the 
+    Lasso's sparse linear model. After a number of rounds mN <= p <= T, 
+    it performs feature selection to select the top k features. In the 
+    remaining rounds, the learner exploits on the reduced feature space.
 
     Attributes:
         (super)
@@ -24,8 +28,8 @@ class ETCLearner(AbstractLearner):
 
         action_set:
         regressor:
-        optimal_action: the chosen action that will be used throughout the
-            exploitation phase.
+        X_exploration:
+        y_exploration:
         selected_features: 
     """
     def __init__(self, T : int, d:int, params : dict):
@@ -39,34 +43,29 @@ class ETCLearner(AbstractLearner):
         # Lasso regressor to compute estimated theta (parameter vector)
         self.regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
 
-        self.optimal_action_id = None
+        self.X_exploration = None
+        self.y_exploration = None
 
         self.selected_features = None
 
     def run(self, env : SparseLinearEnvironment, logger = None):
         self.N = env.actions
 
+        assert self.m * self.N <= self.T
+
+        # Feature selection only in the exploitation stage.
+        assert self.p >= self.m * self.N
+
         for t in range(1, self.T + 1):
 
-            # Generate a new set of actions (feature vectors)
+            # Generate new action set (feature vectors).
             self.action_set = env.observe_actions()
 
             # Select an action (feature vector) through exploration or exploitation
             action = self.select_action(t)
 
-            if self.selected_features is None:
-                action_for_model = action
-            else:
-                action_for_model = action[self.selected_features]
-
             # Compute the reward corresponding to the selected action (feature vector)
             reward = env.reveal_reward(action)
-
-            x = action_for_model.reshape(1, -1)
-            y = np.array([reward])
-
-            # Update regressor
-            self.regressor.partial_fit(x, y)
 
             self.history.append((action, reward))
 
@@ -74,10 +73,23 @@ class ETCLearner(AbstractLearner):
 
             # Log the actions
             if logger is not None:
-                logger.log(t, reward, env.regret[-1])
+                logger.log(t, self.p, self.k, reward, env.regret[-1])
+
+            # Fix estimated param vector for exploitation after mN rounds
+            if t == self.m * self.N:
+                self.X_exploration = np.vstack([entry[0] for entry in self.history])
+                self.y_exploration = np.array([entry[1] for entry in self.history])
+                self.regressor.partial_fit(self.X_exploration, self.y_exploration)
 
             if t == self.p:
                 self.do_feature_selection()
+
+            # Fix estimated param vector for exploitation after mN rounds
+            # Feature selection is done immediately.
+            #if t == self.m * self.N:
+            #    self.X_exploration = np.vstack([entry[0] for entry in self.history])
+            #    self.y_exploration = np.array([entry[1] for entry in self.history])
+            #    self.do_feature_selection()
 
     '''
     Adapts the learner to the reduced feature space.
@@ -87,22 +99,24 @@ class ETCLearner(AbstractLearner):
     - 
     '''
     def do_feature_selection(self):
-        X_full = np.vstack([entry[0] for entry in self.history])
-        y_full = np.array([entry[1] for entry in self.history])
+        self.selected_features = np.array(self.selectKFeatures(self.X_exploration, self.y_exploration, self.k))
 
-        self.selected_features = np.array(self.selectKFeatures(X_full, y_full, self.k))
-
-        X_reduced = X_full[:, self.selected_features]
+        X_reduced = self.X_exploration[:, self.selected_features]
 
         new_regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
-        new_regressor.partial_fit(X_reduced, y_full)
+        new_regressor.partial_fit(X_reduced, self.y_exploration)
         self.regressor = new_regressor
 
     def select_action(self, t):
-        if t < self.N * self.m:
+        # Exploration
+        if t <= self.m * self.N:
             return self.action_set[t % self.N]
         
-        if t == self.N * self.m:
+        # Exploitation
+        if t > self.m * self.N:
+            '''
+            '''
+            #if self.selected_features is None:
             if t > self.p:
                 model_action_set = np.vstack([self.reduce_action(a) for a in self.action_set])
             else:
@@ -112,9 +126,10 @@ class ETCLearner(AbstractLearner):
             estimated_rewards = self.regressor.predict(model_action_set)
 
             # Select action index whose corresponding estimated reward is maximum. 
-            self.optimal_action_id = np.argmax(estimated_rewards)
-
-        return self.action_set[self.optimal_action_id]
+            best_reward_id = np.argmax(estimated_rewards)
+            
+            # Return feature vector corresponding to selected action.
+            return self.action_set[best_reward_id]
     
     '''
     Reduces the dimensionality of an action using the selected features.
