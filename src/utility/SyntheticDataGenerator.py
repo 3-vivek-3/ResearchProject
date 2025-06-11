@@ -2,9 +2,9 @@ from pathlib import Path
 import numpy as np, pickle, gzip
 
 H = 500 # horizon
-N = 50 # actions
-TRIALS = 50 # trials
-D = 200 # ambient dimension
+N = 10 # actions
+TRIALS = 30 # trials
+D = 100 # ambient dimension
 SPARSITY = 0.9
 
 action_sets = []
