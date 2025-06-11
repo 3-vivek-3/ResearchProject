@@ -15,26 +15,33 @@ from pathlib import Path
 
 class SettingsSimulator:
 
-    def __init__(self, settings_dir, filename="simulation_config.json"):
+    def __init__(self, settings_dir, file_name, data_dir, data_file_name):
 
-        self.settings_dir = settings_dir
-        self.filename = filename
-        self.settings_path = os.path.join(settings_dir, self.filename)
-
+        # Config file path
+        self.settings_path = os.path.join(settings_dir, file_name)
         self._read_settings()
 
-        #data_file_name = "env_500x50x200_0%_sparsity.pkl.gz"
-        #data_file_name = "env_500x50x200_10%_sparsity.pkl.gz"
-        #data_file_name = "env_500x50x200_50%_sparsity.pkl.gz"
-        #data_file_name = "env_500x50x200_90%_sparsity.pkl.gz"
-        data_file_name = "env_500x50x200_90%_sparsity_50_trials.pkl.gz"
-        #data_file_name = "env2_500x50x200_90%_sparsity_50_trials.pkl.gz"
+        # Data file path
+        self.data_file = Path(data_dir) / data_file_name
+        self._read_data()
 
-        #data_file_name = "env_100x10x20_10%_sparsity.pkl.gz"
-        #data_file_name = "env_100x10x20_50%_sparsity.pkl.gz"
-        #data_file_name = "env_100x10x20_90%_sparsity.pkl.gz"
+        self.logger = ResultLogger(self.name)
+        self.logger.new_log()
 
-        self.data_file = Path("data") / data_file_name
+        self.trials = len(self.trials_action_sets)
+        self.horizon, self.actions, self.d = self.trials_action_sets[0].shape
+
+        print(f"\ntrials: {self.trials}, horizon: {self.horizon}, actions: {self.actions}, amb_dim: {self.d}")
+        
+        self.visualizer : Visualizer = Visualizer(self.logger.log_dir, self.do_export, self.do_show)
+
+        self.curr_simulation = 0
+        self.num_simulations = len(self.settings)
+
+        # Create a replica json file in the log folder.
+        self._replicate_settings(self.logger.get_results_dir(file_name))
+
+    def _read_data(self):
         if self.data_file.exists():
             with gzip.open(self.data_file, "rb") as f:
                 loaded = pickle.load(f)
@@ -44,45 +51,21 @@ class SettingsSimulator:
         else:
             raise RuntimeError("Data file not loaded")
 
-        self.logger = ResultLogger(self.name)
-        self.logger.new_log()
-
-        self.trials = len(self.trials_action_sets)
-        self.horizon, self.actions, self.d = self.trials_action_sets[0].shape
-
-        print(f"\ntrials: {self.trials}, horizon: {self.horizon}, actions: {self.actions}, amb_dim: {self.d}")
-
-
-        self._replicate_settings(self.logger.get_results_dir(self.filename))
-        self.visualizer : Visualizer = Visualizer(self.logger.log_dir, self.do_export, self.do_show)
-
-        self.curr_simulation = 0
-
     def _read_settings(self):
         
-        # the data loaded from a config file.
+        # Data loaded from the config file.
         data = json.load(open(self.settings_path, mode = "r", encoding="utf-8"))
 
         assert data["simulations"] is not None
         assert data["name"] is not None
 
         self.name = data["name"]
-        #self.do_export = data.get("export_figures", False)
+
         self.do_export = data["export_figures"]
         self.do_show = data["show_figures"]
 
         # contains the actual data for all simulations
         self.settings = data["simulations"]
-        self.num_simulations = len(self.settings)
-
-        # a mapping of simulation name to simulation settings
-        simulation_names = list(map(lambda sim : sim["name"], self.settings))
-
-        # Make sure that simulation names are unique
-        if len(simulation_names) != len(set(simulation_names)):
-            raise RuntimeError("Simulation names are not unique")
-
-        self.run_names = simulation_names
 
     def _replicate_settings(self, file_path : str):
 
@@ -95,8 +78,6 @@ class SettingsSimulator:
             "data file" : str(self.data_file),
 
             "number of simulations" : self.num_simulations,
-            #"number of trials" : total_trials,
-            #"simulation names" : self.run_names,
             "trials" : self.trials,
             "horizon" : self.horizon,
             "actions" : self.actions,
@@ -107,7 +88,6 @@ class SettingsSimulator:
 
         with open(file_path, mode="w", encoding="utf-8") as f:
             json.dump(data, f, indent = 4)
-
 
     def simulate_next(self):
 
