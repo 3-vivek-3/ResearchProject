@@ -36,7 +36,7 @@ class EGreedyLearner(AbstractLearner):
         self.action_set = []
 
         # Lasso regressor to compute estimated theta (parameter vector)
-        self.regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
+        self.regressor = SGDRegressor(penalty="l1", alpha=0.5, fit_intercept=True, random_state=0)
 
         # Elastic net regressor
         # By default, l1_ratio = 0.15, meaning l1=0.0015 and l2=0.0085
@@ -74,7 +74,7 @@ class EGreedyLearner(AbstractLearner):
             env.record_regret(reward, self.action_set)
 
             if logger is not None:
-                logger.log(t, reward, env.regret[-1])
+                logger.log(t, self.p, self.k, reward, env.regret[-1])
 
             if t == self.p:
                 self.do_feature_selection()
@@ -94,7 +94,7 @@ class EGreedyLearner(AbstractLearner):
 
         X_reduced = X_full[:, self.selected_features]
 
-        new_regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
+        new_regressor = SGDRegressor(penalty="l1", alpha=0.5, fit_intercept=True, random_state=0)
         new_regressor.partial_fit(X_reduced, y_full)
         self.regressor = new_regressor
 
