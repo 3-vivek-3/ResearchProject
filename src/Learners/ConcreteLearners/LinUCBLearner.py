@@ -77,7 +77,7 @@ class LinUCBLearner(AbstractLearner):
             env.record_regret(reward, self.action_set)
 
             if logger is not None:
-                logger.log(t, reward, env.regret[-1])
+                logger.log(t, self.p, self.k, reward, env.regret[-1])
 
             #if t == self.p:
             #    self.do_feature_selection()
