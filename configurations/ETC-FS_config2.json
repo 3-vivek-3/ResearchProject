@@ -1,0 +1,16 @@
+{
+    "name" : "ETC-FS config2",
+
+    "export_figures" : true,
+    "show_figures" : true,
+
+    "env" : "SparseLinearEnvironment",
+    "learner" : "ETCLearner",
+
+    "p_step": 100,
+    "k_step": 50,
+
+    "learner_config" : {
+        "featureSelector": "anovaF"
+    }
+}

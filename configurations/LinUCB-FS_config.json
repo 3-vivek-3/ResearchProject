@@ -1,0 +1,62 @@
+{
+  "name" : "LinUCB-FS config",
+
+  "export_figures" : true,
+  "show_figures" : true,
+
+  "simulations" : [
+    {
+      "name" : "LinUCB base case: delta = 0.9, lambda = 20",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "LinUCBLearner",
+
+      "learner_config" : {
+        "delta": 0.9,
+        "regularization": 20
+      }
+    },
+    {
+      "name" : "LinUCB-FS: p = 400, k = 25",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "LinUCBLearner",
+
+      "learner_config" : {
+        "delta": 0.9,
+        "regularization": 20,
+        "featureSelector": "anovaF",
+        "p": 400,
+        "k": 25
+      }
+    },
+    {
+      "name" : "LinUCB-FS: p = 400, k = 50",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "LinUCBLearner",
+
+      "learner_config" : {
+        "delta": 0.9,
+        "regularization": 20,
+        "featureSelector": "anovaF",
+        "p": 400,
+        "k": 50
+      }
+    },
+    {
+      "name" : "LinUCB-FS: p = 400, k = 75",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "LinUCBLearner",
+
+      "learner_config" : {
+        "delta": 0.9,
+        "regularization": 20,
+        "featureSelector": "anovaF",
+        "p": 400,
+        "k": 75
+      }
+    }
+  ]
+}

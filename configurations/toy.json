@@ -1,0 +1,39 @@
+{
+  "name" : "Toy Example",
+
+  "export_figures" : true,
+  "show_figures" : true,
+  "simulations" : [
+    {
+      "name" : "Simulation 1",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "EGreedyLearner",
+
+      "learner_config" : {
+        "epsilon": 0.01
+      }
+    },
+    {
+      "name" : "Simulation 2",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "EGreedyLearner",
+
+      "learner_config" : {
+        "epsilon": 0.01
+      }
+    },
+    {
+      "name" : "Simulation 3",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "EGreedyLearner",
+
+      "learner_config" : {
+        "epsilon": 0.01
+      }
+    }
+
+  ]
+}

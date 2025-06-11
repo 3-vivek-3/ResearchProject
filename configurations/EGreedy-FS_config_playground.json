@@ -1,0 +1,19 @@
+{
+    "name" : "EGreedy-FS config",
+
+    "export_figures" : true,
+    "show_figures" : true,
+
+    "simulations" : [
+       {
+            "name" : "EGreedy base case: epsilon = 0.01",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "learner_config" : {
+                "epsilon": 0.01
+            }
+        }
+    ]
+}

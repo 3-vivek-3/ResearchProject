@@ -1,0 +1,17 @@
+{
+    "name" : "EGreedy-FS config2",
+
+    "export_figures" : true,
+    "show_figures" : true,
+
+    "env" : "SparseLinearEnvironment",
+    "learner" : "EGreedyLearner",
+
+    "p_step": 100,
+    "k_step": 20,
+
+    "learner_config" : {
+        "epsilon": 0.01,
+        "featureSelector": "anovaF"
+    }    
+}
