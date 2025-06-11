@@ -26,7 +26,7 @@ class SparseLinearEnvironment(AbstractEnvironment):
         super().__init__(params)
         self.actions = params["actions"]
         self.sparsity = 0.9
-        self.sigma = 1
+        self.sigma = 0.05
 
         '''
         During the first trial, when an environment is created for the first
