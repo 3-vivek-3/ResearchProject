@@ -21,6 +21,7 @@ To obtain a data file for your experiments:
 Configuration files define the parameters for your experiments.
 
 For SettingsSimulator1:
+```json
 {
   "name": "<experiment-name>",           // run name
   "export_figures": <true|false>,        // save figures to disk
@@ -33,15 +34,18 @@ For SettingsSimulator1:
       "learner": "<LearnerClassName>",   // e.g. "ETCLearner"
 
       "learner_config": {                // learner parameters
-        "<param1>": <value1>,
+        "<param1>": "<value1>",
         "<param2>": "<value2>"
+        // …additonal params...
       }
     },
     // …additonal simulations…
   ]
 }
+```
 
 For SettingsSimulator2:
+```json
 {
   "name": "<experiment-name>",             // run name
   "export_figures": <true|false>,          // save figures to disk
@@ -50,14 +54,16 @@ For SettingsSimulator2:
   "env": "<EnvironmentClassName>",         // e.g. "SparseLinearEnvironment"
   "learner": "<LearnerClassName>",         // e.g. "LinUCBLearner"
 
-  "p_step": <integer>,                     // grid search: p step size
-  "k_step": <integer>,                     // grid search: k step size
+  "p_step": "<integer>",                     // grid search: p step size
+  "k_step": "<integer>",                     // grid search: k step size
 
   "learner_config": {                      // learner parameters
-    "<param1>": <value1>,
-    "<param2>": <value2>
+    "<param1>": "<value1>",
+    "<param2>": "<value2>"
+    // …additonal params...
   }
 }
+```
 
 ### Running Experiments
 To execute a simulation:
