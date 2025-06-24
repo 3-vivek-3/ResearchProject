@@ -137,9 +137,9 @@ class SettingsSimulator2:
             learner_params["p"] = p
             learner_params["k"] = k
 
-            if self.learner_cls.__name__ == "ETCLearner":
-                learner_params["m"] = (int)(p / self.actions)
-                print("\nTest")
+            #if self.learner_cls.__name__ == "ETCLearner":
+            #    learner_params["m"] = (int)(p / self.actions)
+            #    print("\nTest")
             
             # Instantiate a new copy of the environment and learner
             env : AbstractEnvironment = self.env_cls(env_params)
