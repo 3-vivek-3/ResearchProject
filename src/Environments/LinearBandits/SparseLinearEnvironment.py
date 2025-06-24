@@ -95,3 +95,6 @@ class SparseLinearEnvironment(AbstractEnvironment):
     
     def get_theta(self):
         return self.true_theta
+    
+    def get_sigma(self):
+        return self.sigma
