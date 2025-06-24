@@ -41,7 +41,7 @@ class ETCLearner(AbstractLearner):
         self.action_set = None
 
         # Lasso regressor to compute estimated theta (parameter vector)
-        self.regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
+        self.regressor = SGDRegressor(penalty="l1", alpha=0.1, fit_intercept=True, random_state=0)
 
         self.X_exploration = None
         self.y_exploration = None
@@ -51,10 +51,13 @@ class ETCLearner(AbstractLearner):
     def run(self, env : SparseLinearEnvironment, logger = None):
         self.N = env.actions
 
+        # Number of exploration rounds is less than the horizon.
         assert self.m * self.N <= self.T
 
         # Feature selection only in the exploitation stage.
-        assert self.p >= self.m * self.N
+        if self.p < self.m * self.N:
+            print(f"\nChanged {self.p} to {self.m * self.N}")
+            self.p = self.m * self.N
 
         for t in range(1, self.T + 1):
 
@@ -71,31 +74,30 @@ class ETCLearner(AbstractLearner):
 
             env.record_regret(reward, self.action_set)
 
-            # Log the actions
+            # Log the data: round no., p, k, reward in round t, regret in round t
             if logger is not None:
                 logger.log(t, self.p, self.k, reward, env.regret[-1])
 
-            # Fix estimated param vector for exploitation after mN rounds
+            # Fix 𝜃^ for exploitation after mN rounds
             if t == self.m * self.N:
                 self.X_exploration = np.vstack([entry[0] for entry in self.history])
                 self.y_exploration = np.array([entry[1] for entry in self.history])
-                self.regressor.partial_fit(self.X_exploration, self.y_exploration)
+                self.regressor.fit(self.X_exploration, self.y_exploration)
 
             if t == self.p:
                 self.do_feature_selection()
 
-            # Fix estimated param vector for exploitation after mN rounds
-            # Feature selection is done immediately.
+            ## Fix estimated param vector for exploitation after mN rounds.
+            ## Feature selection is done immediately after exploration.
             #if t == self.m * self.N:
             #    self.X_exploration = np.vstack([entry[0] for entry in self.history])
-            #    self.y_exploration = np.array([entry[1] for entry in self.history])
+            #   self.y_exploration = np.array([entry[1] for entry in self.history])
             #    self.do_feature_selection()
 
     '''
     Adapts the learner to the reduced feature space.
     - selects k features
-    - builds a new regressor from the old one to work for the reduced
-        feature space.
+    - builds a new regressor to work for the reduced feature space.
     - 
     '''
     def do_feature_selection(self):
@@ -103,19 +105,22 @@ class ETCLearner(AbstractLearner):
 
         X_reduced = self.X_exploration[:, self.selected_features]
 
-        new_regressor = SGDRegressor(penalty="l1", alpha=0.01, fit_intercept=True, random_state=0)
-        new_regressor.partial_fit(X_reduced, self.y_exploration)
+        new_regressor = SGDRegressor(penalty="l1", alpha=0.1, fit_intercept=True, random_state=0)
+        new_regressor.fit(X_reduced, self.y_exploration)
         self.regressor = new_regressor
+
+        #new_regressor = LinearRegression(fit_intercept = True)
+
+        # run main again and see changes to previous graph/
+        # change the alpha value and see the changes. (probably 0.5)
 
     def select_action(self, t):
         # Exploration
         if t <= self.m * self.N:
-            return self.action_set[t % self.N]
+            return self.action_set[(t - 1) % self.N]
         
         # Exploitation
         if t > self.m * self.N:
-            '''
-            '''
             #if self.selected_features is None:
             if t > self.p:
                 model_action_set = np.vstack([self.reduce_action(a) for a in self.action_set])
@@ -150,3 +155,6 @@ class ETCLearner(AbstractLearner):
         for (_, reward) in self.history:
              cumulative.append(reward)
         return cumulative
+    
+    def get_selected_features(self):
+        return self.selected_features
