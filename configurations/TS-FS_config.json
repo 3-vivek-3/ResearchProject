@@ -1,42 +1,43 @@
 {
-  "name" : "ETC-FS config",
+  "name" : "TS-FS config",
 
   "export_figures" : true,
   "show_figures" : true,
+
   "simulations" : [
     {
-      "name" : "ETC base case: m = 10",
+      "name" : "TS base case: lambda = 1",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "TSLearner",
 
       "learner_config" : {
-        "m": 10
+        "regularization": 1
       }
     },
     {
-      "name" : "ETC-FS ANOVA-F: p = 100, k = 90",
+      "name" : "TS-FS ANOVA-F: p = 100, k = 90",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "TSLearner",
 
       "learner_config" : {
-        "m": 10,
+        "regularization": 1,
         "featureSelector": "anovaF",
         "p": 100,
         "k": 90
       }
     },
     {
-      "name" : "ETC-FS RFE: p = 150, k = 20",
+      "name" : "TS-FS RFE: p = 50, k = 20",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "TSLearner",
 
       "learner_config" : {
-        "m": 10,
+        "regularization": 1,
         "featureSelector": "rfe",
-        "p": 150,
+        "p": 50,
         "k": 20
       }
     }

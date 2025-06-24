@@ -6,39 +6,6 @@
 
   "simulations" : [
     {
-      "name" : "LinUCB: delta = 0.9, lambda = 25",
-
-      "env" : "SparseLinearEnvironment",
-      "learner" : "LinUCBLearner",
-
-      "learner_config" : {
-        "delta": 0.9,
-        "regularization": 25
-      }
-    },
-    {
-      "name" : "LinUCB: delta = 0.9, lambda = 0.1",
-
-      "env" : "SparseLinearEnvironment",
-      "learner" : "LinUCBLearner",
-
-      "learner_config" : {
-        "delta": 0.9,
-        "regularization": 0.1
-      }
-    },
-    {
-      "name" : "LinUCB: delta = 0.9, lambda = 1",
-
-      "env" : "SparseLinearEnvironment",
-      "learner" : "LinUCBLearner",
-
-      "learner_config" : {
-        "delta": 0.9,
-        "regularization": 1
-      }
-    },
-    {
       "name" : "LinUCB: delta = 0.9, lambda = 10",
 
       "env" : "SparseLinearEnvironment",
@@ -72,13 +39,14 @@
       }
     },
     {
-      "name" : "E-greedy: epsilon = 0.01",
-      
+      "name" : "LinUCB: delta = 0.9, lambda = 25",
+
       "env" : "SparseLinearEnvironment",
-      "learner" : "EGreedyLearner",
-      
+      "learner" : "LinUCBLearner",
+
       "learner_config" : {
-        "epsilon": 0.01
+        "delta": 0.9,
+        "regularization": 25
       }
     }
   ]

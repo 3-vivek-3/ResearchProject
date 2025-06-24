@@ -1,18 +1,17 @@
 {
-    "name" : "LinUCB-FS config2",
+    "name" : "TS-FS config2",
 
     "export_figures" : true,
     "show_figures" : true,
 
     "env" : "SparseLinearEnvironment",
-    "learner" : "LinUCBLearner",
+    "learner" : "TSLearner",
 
     "p_step": 50,
     "k_step": 10,
 
     "learner_config" : {
         "featureSelector": "rfe",
-        "delta": 0.9,
-        "regularization": 15
+        "regularization": 1
     }
 }

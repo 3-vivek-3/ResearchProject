@@ -1,68 +1,68 @@
 {
-  "name" : "ETC config",
+  "name" : "TS config",
 
   "export_figures" : true,
   "show_figures" : true,
 
   "simulations" : [
     {
-      "name" : "ETC: m = 5",
+      "name" : "TS: lambda = 1",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "TSLearner",
 
       "learner_config" : {
-        "m": 5
+        "regularization": 1
       }
     },
     {
-      "name" : "ETC: m = 6",
+      "name" : "TS: lambda = 10",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "TSLearner",
 
       "learner_config" : {
-        "m": 6
+        "regularization": 10
       }
     },
     {
-      "name" : "ETC: m = 7",
+      "name" : "TS: lambda = 20",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "TSLearner",
 
       "learner_config" : {
-        "m": 7
+        "regularization": 20
       }
     },
     {
-      "name" : "ETC: m = 8",
+      "name" : "TS: lambda = 0.1",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "TSLearner",
 
       "learner_config" : {
-        "m": 8
+        "regularization": 0.1
       }
     },
     {
-      "name" : "ETC: m = 9",
+      "name" : "TS: lambda = 0.5",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "TSLearner",
 
       "learner_config" : {
-        "m": 9
+        "regularization": 0.5
       }
     },
     {
-      "name" : "ETC: m = 10",
+      "name" : "TS: lambda = 5",
 
       "env" : "SparseLinearEnvironment",
-      "learner" : "ETCLearner",
+      "learner" : "TSLearner",
 
       "learner_config" : {
-        "m": 10
+        "regularization": 5
       }
     }
   ]

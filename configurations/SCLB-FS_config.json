@@ -1,0 +1,62 @@
+{
+  "name" : "SCLB-FS config",
+
+  "export_figures" : true,
+  "show_figures" : true,
+
+  "simulations" : [
+    {
+      "name" : "Best TS-FS",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "TSLearner",
+
+      "learner_config" : {
+        "regularization": 1,
+        "featureSelector": "rfe",
+        "p": 50,
+        "k": 20
+      }
+    },
+    {
+      "name" : "Best EGreedy-FS",
+      
+      "env" : "SparseLinearEnvironment",
+      "learner" : "EGreedyLearner",
+      
+      "learner_config" : {
+        "epsilon": 0.01,
+        "featureSelector": "rfe",
+        "p": 50,
+        "k": 10
+      }
+    },
+    {
+      "name" : " Best LinUCB-FS",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "LinUCBLearner",
+
+      "learner_config" : {
+        "delta": 0.9,
+        "regularization": 15,
+        "featureSelector": "rfe",
+        "p": 50,
+        "k": 10
+      }
+    },
+    {
+      "name" : "Best ETC-FS",
+
+      "env" : "SparseLinearEnvironment",
+      "learner" : "ETCLearner",
+
+      "learner_config" : {
+        "m": 10,
+        "featureSelector": "rfe",
+        "p": 150,
+        "k": 20
+      }
+    }
+  ]
+}

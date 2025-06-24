@@ -7,10 +7,11 @@
     "env" : "SparseLinearEnvironment",
     "learner" : "ETCLearner",
 
-    "p_step": 100,
-    "k_step": 50,
+    "p_step": 50,
+    "k_step": 10,
 
     "learner_config" : {
-        "featureSelector": "anovaF"
+        "m": 10,
+        "featureSelector": "rfe"
     }
 }

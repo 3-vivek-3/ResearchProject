@@ -6,27 +6,27 @@
 
     "simulations" : [
         {
-            "name" : "E-greedy: epsilon = 0.0001",
+            "name" : "EGreedy: epsilon = 0.1",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
 
             "learner_config" : {
-                "epsilon": 0.0001
+                "epsilon": 0.1
             }
         },
         {
-            "name" : "E-greedy: epsilon = 0.00001",
+            "name" : "EGreedy: epsilon = 0.05",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
 
             "learner_config" : {
-                "epsilon": 0.00001
+                "epsilon": 0.05
             }
         },
         {
-            "name" : "E-greedy: epsilon = 0.01",
+            "name" : "EGreedy: epsilon = 0.01",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
@@ -36,23 +36,23 @@
             }
         },
         {
-            "name" : "E-greedy: epsilon = 0.001",
-
-            "env" : "SparseLinearEnvironment",
-            "learner" : "EGreedyLearner",
-
-            "learner_config" : {
-                "epsilon": 0.001
-            }
-        },
-        {
-            "name" : "E-greedy: epsilon = 0.005",
+            "name" : "EGreedy: epsilon = 0.005",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
 
             "learner_config" : {
                 "epsilon": 0.005
+            }
+        },
+        {
+            "name" : "EGreedy: epsilon = 0.001",
+
+            "env" : "SparseLinearEnvironment",
+            "learner" : "EGreedyLearner",
+
+            "learner_config" : {
+                "epsilon": 0.001
             }
         }
     ]

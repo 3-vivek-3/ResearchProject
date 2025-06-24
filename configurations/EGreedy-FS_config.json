@@ -16,7 +16,7 @@
             }
         },
         {
-            "name" : "EGreedy-FS: p = 200, k = 60",
+            "name" : "EGreedy-FS ANOVA-F: p = 50, k = 90",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
@@ -24,34 +24,21 @@
             "learner_config" : {
                 "epsilon": 0.01,
                 "featureSelector": "anovaF",
-                "p": 200,
-                "k": 60
+                "p": 50,
+                "k": 90
             }
         },
         {
-            "name" : "EGreedy-FS: p = 300, k = 60",
+            "name" : "EGreedy-FS RFE: p = 50, k = 10",
 
             "env" : "SparseLinearEnvironment",
             "learner" : "EGreedyLearner",
 
             "learner_config" : {
                 "epsilon": 0.01,
-                "featureSelector": "anovaF",
-                "p": 300,
-                "k": 60
-            }
-        },
-        {
-            "name" : "EGreedy-FS: p = 400, k = 60",
-
-            "env" : "SparseLinearEnvironment",
-            "learner" : "EGreedyLearner",
-
-            "learner_config" : {
-                "epsilon": 0.01,
-                "featureSelector": "anovaF",
-                "p": 400,
-                "k": 60
+                "featureSelector": "rfe",
+                "p": 50,
+                "k": 10
             }
         }
     ]

@@ -7,11 +7,11 @@
     "env" : "SparseLinearEnvironment",
     "learner" : "EGreedyLearner",
 
-    "p_step": 100,
-    "k_step": 20,
+    "p_step": 50,
+    "k_step": 10,
 
     "learner_config" : {
         "epsilon": 0.01,
-        "featureSelector": "anovaF"
+        "featureSelector": "rfe"
     }    
 }
