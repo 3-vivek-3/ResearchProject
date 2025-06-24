@@ -21,7 +21,7 @@ To obtain a data file for your experiments:
 Configuration files define the parameters for your experiments.
 
 For SettingsSimulator1:
-```json
+```
 {
   "name": "<experiment-name>",           // run name
   "export_figures": <true|false>,        // save figures to disk
@@ -45,7 +45,7 @@ For SettingsSimulator1:
 ```
 
 For SettingsSimulator2:
-```json
+```
 {
   "name": "<experiment-name>",             // run name
   "export_figures": <true|false>,          // save figures to disk
