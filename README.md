@@ -17,7 +17,7 @@ To obtain a data file for your experiments:
 2. Adjust the parameters as needed for your use case
 3. Run the generator to create your dataset
 
-## Configuration Files
+### Configuration Files
 Configuration files define the parameters for your experiments.
 
 For SettingsSimulator1:
