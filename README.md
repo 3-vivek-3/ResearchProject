@@ -1,4 +1,4 @@
-# SparseSequentialLearning: Exploring Stochastic Contextual Linear Bandit (SCLB) and Feature Selection Combinations for Fixed Reduced Dimensions
+# SparseSequentialLearning
 
 This repository contains the code implemented for the course [CSE3000](https://github.com/TU-Delft-CSE/Research-Project) in BSc Computer Science and Engineering, TU Delft.
 ## Project Structure
