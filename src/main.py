@@ -31,24 +31,25 @@ def complex_simulation():
     #file_name = "ETC-FS_config2.json"
 
     #file_name = "LinUCB_config.json"
+    #file_name = "LinUCB_config2.json"
     #file_name = "LinUCB-FS_config.json"
-    file_name = "LinUCB-FS_config2.json"
+    #file_name = "LinUCB-FS_config2.json"
+
+    #file_name = "TS_config.json"
+    #file_name = "TS-FS_config.json"
+    #file_name = "TS-FS_config2.json"
+
+    file_name = "SCLB-FS_config.json"
+
 
     #data_file_name = "env_10x2x5_90%_sparsity_5_trials.pkl.gz"
 
-    #data_file_name = "env_500x50x200_0%_sparsity.pkl.gz"
-    #data_file_name = "env_500x50x200_10%_sparsity.pkl.gz"
-    #data_file_name = "env_500x50x200_50%_sparsity.pkl.gz"
-    #data_file_name = "env_500x50x200_90%_sparsity.pkl.gz"
-    #data_file_name = "env_500x50x200_90%_sparsity_50_trials.pkl.gz"
-    #data_file_name = "env2_500x50x200_90%_sparsity_50_trials.pkl.gz"
-
-    #data_file_name = "env_500x10x100_50%_sparsity_20_trials.pkl.gz"
-    #data_file_name = "env_500x10x100_90%_sparsity_20_trials.pkl.gz"
+    #data_file_name = "env_500x10x100_70%_sparsity_30_trials.pkl.gz"
+    #data_file_name = "env_500x10x100_80%_sparsity_30_trials.pkl.gz"
     data_file_name = "env_500x10x100_90%_sparsity_30_trials.pkl.gz"
     
-    #simulator = SettingsSimulator(settings_dir, file_name, data_dir, data_file_name)
-    simulator = SettingsSimulator2(settings_dir, file_name, data_dir, data_file_name)
+    simulator = SettingsSimulator(settings_dir, file_name, data_dir, data_file_name)
+    #simulator = SettingsSimulator2(settings_dir, file_name, data_dir, data_file_name)
     
     simulator.simulate_all()
 
