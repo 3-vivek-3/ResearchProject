@@ -14,6 +14,7 @@ import pickle
 from pathlib import Path
 
 class SettingsSimulator2:
+    '''Multi-trial, multi-parameter simulations. Parameter-sweep-oriented, that accepts config parameters directly and computes a simulation grid.'''
 
     def __init__(self, settings_dir, file_name, data_dir, data_file_name):
 
