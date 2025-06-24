@@ -71,7 +71,7 @@ class AbstractLearner(ABC):
         return selector.get_support(indices=True)
     
     def rfe(self, X, y, k):
-        estimator = Lasso(alpha=0.01, max_iter=10000)
+        estimator = Lasso(alpha=0.1, max_iter=10000)
 
         selector  = RFE(estimator = estimator, 
                         n_features_to_select=k, 
