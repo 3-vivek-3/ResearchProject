@@ -45,10 +45,10 @@ class LinUCBLearner(AbstractLearner):
 
     def run(self, env: AbstractEnvironment, logger=None):
         self.d = env.get_ambient_dim()
-        self.V = self.regularization * np.eye(self.d) 
+        self.V = self.regularization * np.eye(self.d)
         self.V_inv = np.eye(self.d) / self.regularization # (d, d) -> (k, k)
-        self.b = np.zeros(self.d).reshape(-1, 1) # (d, 1)
-        self.theta = np.zeros(self.d).reshape(-1, 1) # (d, 1) 
+        self.b = np.zeros(self.d).reshape(-1, 1) # (d, 1) -> (k, 1)
+        self.theta = np.zeros(self.d).reshape(-1, 1) # (d, 1) -> (k, 1)
 
         for t in range(1, self.T + 1):
             
@@ -59,12 +59,11 @@ class LinUCBLearner(AbstractLearner):
             action = self.select_action2(t) # (1, d)
 
             if self.selected_features is None:
-                action_for_model = action
+                action_for_model = action # (1, d)
             else:
-                action_for_model = action[self.selected_features] # (d, 1) -> (k, 1)
+                action_for_model = action[self.selected_features] # (1, k)
 
-            x = np.array(action_for_model).reshape(-1, 1)
-
+            x = np.array(action_for_model).reshape(-1, 1) # (d, 1) -> (k, 1)
 
             # Compute the reward corresponding to the selected action (feature vector)
             reward = env.reveal_reward(action)
@@ -79,8 +78,8 @@ class LinUCBLearner(AbstractLearner):
             if logger is not None:
                 logger.log(t, self.p, self.k, reward, env.regret[-1])
 
-            #if t == self.p:
-            #    self.do_feature_selection()
+            if t == self.p:
+                self.do_feature_selection()
 
     def do_feature_selection(self):
         X_full = np.vstack([entry[0] for entry in self.history])
@@ -94,6 +93,7 @@ class LinUCBLearner(AbstractLearner):
         self.V_inv = np.linalg.inv(V_reduced)
 
         self.theta = self.theta[idx]
+        self.b = self.b[idx]
 
     def select_action(self, t):
         beta = np.sqrt(self.regularization)
@@ -191,3 +191,6 @@ class LinUCBLearner(AbstractLearner):
         for (_, reward) in self.history:
             cumulative.append(reward)
         return cumulative
+    
+    def get_selected_features(self):
+        return self.selected_features
