@@ -1,6 +1,9 @@
 # SparseSequentialLearning
 
 This repository contains the code implemented for the course [CSE3000](https://github.com/TU-Delft-CSE/Research-Project) in BSc Computer Science and Engineering, TU Delft.
+The research topic is: "Exploring Stochastic Contextual Linear Bandit and Feature Selection Combinations for Fixed Reduced Dimensions".
+![image](https://github.com/user-attachments/assets/7c8352ee-6045-410e-ae8a-5166de6e15dc)
+
 ## Project Structure
 
 The project consists of several key components:
